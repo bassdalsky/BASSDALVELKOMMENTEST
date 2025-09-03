@@ -1,0 +1,27 @@
+name: velkomst
+
+on:
+  schedule:
+    - cron: "1 0 * * *"   # kjør hver dag kl 00:01
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install node-fetch@3
+      - run: node velkomst.js
+        env:
+          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+          SKILBREI_LAT: ${{ secrets.SKILBREI_LAT }}
+          SKILBREI_LON: ${{ secrets.SKILBREI_LON }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: velkomst-mp3
+          path: velkomst.mp3
